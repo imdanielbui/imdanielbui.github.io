@@ -1,23 +1,720 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
+
   <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <link rel="stylesheet" href="./style.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite App</title>
-    <script type="importmap">
-			{
-				"imports": {
-					"three": "https://cdn.jsdelivr.net/npm/three@0.161/build/three.module.js",
-          "jsm/": "https://cdn.jsdelivr.net/npm/three@0.161/examples/jsm/"
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎂 Sinh nhật Bông ơi!</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;800&family=Nunito:wght@400;700;900&display=swap"
+      rel="stylesheet">
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      :root {
+        --pink-light: #ffe4f0;
+        --pink-mid: #ff85b3;
+        --pink-hot: #ff3d85;
+        --pink-deep: #d6175a;
+        --pink-pale: #fff0f7;
+        --cream: #fff8fb;
+      }
+
+      body {
+        font-family: 'Baloo 2', cursive;
+        background: var(--pink-pale);
+        min-height: 100vh;
+        overflow-x: hidden;
+        position: relative;
+      }
+
+      /* ===== CONFETTI CANVAS ===== */
+      #confetti-canvas {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      /* ===== FLOATING DECO ===== */
+      .floaties {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 1;
+      }
+
+      .floaty {
+        position: absolute;
+        font-size: 28px;
+        animation: floatUp linear infinite;
+        opacity: 0;
+      }
+
+      @keyframes floatUp {
+        0% {
+          transform: translateY(110vh) rotate(0deg);
+          opacity: 0.9;
         }
-			}
-		</script>
+
+        90% {
+          opacity: 0.9;
+        }
+
+        100% {
+          transform: translateY(-20vh) rotate(360deg);
+          opacity: 0;
+        }
+      }
+
+      /* ===== MAIN CONTENT ===== */
+      .wrapper {
+        position: relative;
+        z-index: 10;
+        max-width: 700px;
+        margin: 0 auto;
+        padding: 40px 20px 80px;
+        text-align: center;
+      }
+
+      /* ===== HEADER ===== */
+      .top-tag {
+        display: inline-block;
+        background: var(--pink-hot);
+        color: #fff;
+        font-family: 'Nunito', sans-serif;
+        font-weight: 900;
+        font-size: 13px;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        padding: 6px 20px;
+        border-radius: 999px;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 15px rgba(255, 61, 133, 0.35);
+        animation: pulse 1.5s ease-in-out infinite;
+      }
+
+      @keyframes pulse {
+
+        0%,
+        100% {
+          transform: scale(1);
+        }
+
+        50% {
+          transform: scale(1.06);
+        }
+      }
+
+      .main-title {
+        font-family: 'Nunito', sans-serif;
+        font-weight: 900;
+        font-size: clamp(38px, 12vw, 72px);
+        line-height: 1.1;
+        color: var(--pink-hot);
+        text-shadow: 4px 4px 0 var(--pink-deep), 8px 8px 0 rgba(214, 23, 90, 0.15);
+        margin-bottom: 8px;
+        animation: titleWobble 3s ease-in-out infinite;
+      }
+
+      @keyframes titleWobble {
+
+        0%,
+        100% {
+          transform: rotate(-1deg) scale(1);
+        }
+
+        50% {
+          transform: rotate(1deg) scale(1.02);
+        }
+      }
+
+      @keyframes shake {
+
+        0%,
+        100% {
+          transform: rotate(0deg) scale(1);
+        }
+
+        25% {
+          transform: rotate(-2deg) scale(1.02);
+        }
+
+        75% {
+          transform: rotate(2deg) scale(1.02);
+        }
+      }
+
+      .subtitle {
+        font-size: clamp(16px, 4vw, 22px);
+        color: var(--pink-deep);
+        font-weight: 600;
+        margin-bottom: 40px;
+        opacity: 0.8;
+      }
+
+      /* ===== CAKE ZONE ===== */
+      .cake-zone {
+        position: relative;
+        display: inline-block;
+        margin: 10px 0 30px;
+      }
+
+      .cake-emoji-big {
+        font-size: clamp(100px, 25vw, 160px);
+        display: block;
+        animation: cakeBounce 0.8s ease-in-out infinite alternate;
+        filter: drop-shadow(0 10px 20px rgba(255, 61, 133, 0.3));
+        line-height: 1;
+      }
+
+      @keyframes cakeBounce {
+        from {
+          transform: translateY(0) rotate(-3deg) scale(1);
+        }
+
+        to {
+          transform: translateY(-12px) rotate(3deg) scale(1.05);
+        }
+      }
+
+      .sparkle {
+        position: absolute;
+        font-size: 28px;
+        animation: sparkleSpin 2s linear infinite;
+      }
+
+      .sparkle-1 {
+        top: -10px;
+        left: -20px;
+        animation-duration: 1.8s;
+      }
+
+      .sparkle-2 {
+        top: 10px;
+        right: -25px;
+        animation-duration: 2.3s;
+        animation-delay: 0.4s;
+      }
+
+      .sparkle-3 {
+        bottom: 10px;
+        left: -30px;
+        animation-duration: 2.1s;
+        animation-delay: 0.8s;
+      }
+
+      .sparkle-4 {
+        bottom: -5px;
+        right: -20px;
+        animation-duration: 1.6s;
+        animation-delay: 0.2s;
+      }
+
+      @keyframes sparkleSpin {
+        0% {
+          transform: rotate(0deg) scale(1);
+          opacity: 1;
+        }
+
+        50% {
+          transform: rotate(180deg) scale(1.4);
+          opacity: 0.7;
+        }
+
+        100% {
+          transform: rotate(360deg) scale(1);
+          opacity: 1;
+        }
+      }
+
+      /* ===== AGE BADGE ===== */
+      .age-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        background: linear-gradient(135deg, #ff85b3, #ff3d85);
+        color: #fff;
+        font-family: 'Nunito', sans-serif;
+        font-weight: 900;
+        font-size: clamp(18px, 5vw, 26px);
+        padding: 12px 30px;
+        border-radius: 999px;
+        margin-bottom: 40px;
+        box-shadow: 0 8px 25px rgba(255, 61, 133, 0.4), inset 0 2px 0 rgba(255, 255, 255, 0.3);
+        animation: badgePop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+        animation-delay: 0.3s;
+      }
+
+      @keyframes badgePop {
+        from {
+          transform: scale(0) rotate(-10deg);
+          opacity: 0;
+        }
+
+        to {
+          transform: scale(1) rotate(0deg);
+          opacity: 1;
+        }
+      }
+
+      /* ===== FUNNY WISH CARDS ===== */
+      .cards-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        margin-bottom: 36px;
+      }
+
+      @media (max-width: 480px) {
+        .cards-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .wish-card {
+        background: #fff;
+        border: 2.5px solid var(--pink-mid);
+        border-radius: 20px;
+        padding: 20px 18px;
+        text-align: left;
+        position: relative;
+        overflow: hidden;
+        transition: transform 0.2s, box-shadow 0.2s;
+        cursor: default;
+      }
+
+      .wish-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 5px;
+        background: linear-gradient(90deg, var(--pink-mid), var(--pink-hot), var(--pink-mid));
+      }
+
+      .wish-card:hover {
+        transform: translateY(-5px) rotate(1deg);
+        box-shadow: 0 16px 40px rgba(255, 61, 133, 0.2);
+      }
+
+      .wish-card:nth-child(even):hover {
+        transform: translateY(-5px) rotate(-1deg);
+      }
+
+      .card-icon {
+        font-size: 34px;
+        display: block;
+        margin-bottom: 10px;
+      }
+
+      .card-title {
+        font-family: 'Nunito', sans-serif;
+        font-weight: 900;
+        font-size: 15px;
+        color: var(--pink-hot);
+        margin-bottom: 6px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .card-text {
+        font-size: 14.5px;
+        color: #555;
+        line-height: 1.55;
+      }
+
+      .card-text em {
+        color: var(--pink-deep);
+        font-style: normal;
+        font-weight: 700;
+      }
+
+      /* ===== MAIN WISH BOX ===== */
+      .main-wish {
+        background: linear-gradient(135deg, #fff0f7 0%, #ffe4f0 100%);
+        border: 3px solid var(--pink-mid);
+        border-radius: 28px;
+        padding: 36px 32px;
+        margin-bottom: 36px;
+        position: relative;
+        box-shadow: 0 20px 60px rgba(255, 61, 133, 0.12);
+      }
+
+      .main-wish::after {
+        content: '💌';
+        position: absolute;
+        top: -22px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 40px;
+        filter: drop-shadow(0 4px 8px rgba(255, 61, 133, 0.3));
+      }
+
+      .wish-title {
+        font-family: 'Nunito', sans-serif;
+        font-weight: 900;
+        font-size: clamp(22px, 6vw, 30px);
+        color: var(--pink-hot);
+        margin-bottom: 18px;
+      }
+
+      .wish-text {
+        font-size: clamp(15px, 4vw, 18px);
+        color: #444;
+        line-height: 1.8;
+      }
+
+      .wish-text strong {
+        color: var(--pink-deep);
+        font-weight: 800;
+      }
+
+      .wish-text .highlight {
+        background: var(--pink-light);
+        border-radius: 6px;
+        padding: 2px 8px;
+        display: inline;
+      }
+
+      /* ===== FUNNY METER ===== */
+      .meter-section {
+        background: #fff;
+        border: 2.5px solid var(--pink-mid);
+        border-radius: 24px;
+        padding: 28px 28px;
+        margin-bottom: 36px;
+      }
+
+      .meter-title {
+        font-family: 'Nunito', sans-serif;
+        font-weight: 900;
+        font-size: 18px;
+        color: var(--pink-hot);
+        margin-bottom: 20px;
+      }
+
+      .meter-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 14px;
+      }
+
+      .meter-label {
+        font-size: 14px;
+        color: #666;
+        width: 130px;
+        flex-shrink: 0;
+        text-align: left;
+      }
+
+      .meter-bar-wrap {
+        flex: 1;
+        background: var(--pink-light);
+        border-radius: 999px;
+        height: 18px;
+        overflow: hidden;
+      }
+
+      .meter-bar {
+        height: 100%;
+        border-radius: 999px;
+        background: linear-gradient(90deg, var(--pink-mid), var(--pink-hot));
+        animation: meterFill 1.5s cubic-bezier(0.34, 1.2, 0.64, 1) both;
+      }
+
+      @keyframes meterFill {
+        from {
+          width: 0 !important;
+        }
+      }
+
+      .meter-val {
+        font-weight: 800;
+        font-size: 13px;
+        color: var(--pink-deep);
+        width: 38px;
+        text-align: right;
+      }
+
+      /* ===== BOTTOM FIREWORK ===== */
+      .final-row {
+        font-size: clamp(28px, 8vw, 48px);
+        letter-spacing: 4px;
+        animation: emojiDance 0.7s ease-in-out infinite alternate;
+        margin-bottom: 20px;
+      }
+
+      @keyframes emojiDance {
+        from {
+          transform: translateY(0);
+        }
+
+        to {
+          transform: translateY(-10px);
+        }
+      }
+
+      .final-msg {
+        font-family: 'Nunito', sans-serif;
+        font-weight: 900;
+        font-size: clamp(20px, 5vw, 28px);
+        color: var(--pink-deep);
+        text-shadow: 2px 2px 0 rgba(214, 23, 90, 0.15);
+      }
+
+      /* ===== CLICK BUTTON ===== */
+      .btn-surprise {
+        margin-top: 30px;
+        display: inline-block;
+        background: linear-gradient(135deg, #ff3d85, #ff85b3);
+        color: #fff;
+        font-family: 'Nunito', sans-serif;
+        font-weight: 900;
+        font-size: 17px;
+        border: none;
+        padding: 14px 36px;
+        border-radius: 999px;
+        cursor: pointer;
+        box-shadow: 0 8px 25px rgba(255, 61, 133, 0.4);
+        transition: transform 0.15s, box-shadow 0.15s;
+      }
+
+      .btn-surprise:hover {
+        transform: scale(1.06) translateY(-3px);
+        box-shadow: 0 14px 35px rgba(255, 61, 133, 0.5);
+      }
+
+      .btn-surprise:active {
+        transform: scale(0.97);
+      }
+
+      .surprise-msg {
+        margin-top: 18px;
+        font-size: 22px;
+        color: var(--pink-deep);
+        font-weight: 700;
+        min-height: 30px;
+        transition: all 0.3s;
+      }
+    </style>
   </head>
+
   <body>
-    <div id="container">
+
+    <canvas id="confetti-canvas"></canvas>
+    <div class="floaties" id="floaties"></div>
+
+    <div class="wrapper">
+
+      <!-- HEADER -->
+      <div class="top-tag">⚠️ Cảnh báo: Cực kỳ đáng yêu ⚠️</div>
+
+      <h1 class="main-title">SINH NHẬT CỦA<br>BÔNG ơi!!! 🎉</h1>
+      <p class="subtitle">Hôm nay là ngày đặc biệt nhất của một người đặc biệt nhất 🌸</p>
+
+      <!-- CAKE -->
+      <div class="cake-zone">
+        <!-- <span class="cake-emoji-big">🎂</span> -->
+        <img src="./public/baydatsn.jpg" alt="Birthday Cake"
+          style="width: clamp(200px, 70vw, 350px); height: auto; border-radius: 20px; box-shadow: 0 20px 50px rgba(255, 105, 180, 0.3); animation: shake 0.5s infinite; display: block; margin: 20px auto;">
+        <span class="sparkle sparkle-1">✨</span>
+        <span class="sparkle sparkle-2">⭐</span>
+        <span class="sparkle sparkle-3">💫</span>
+        <span class="sparkle sparkle-4">✨</span>
+      </div>
+
+      <div class="age-badge">🎈 Chúc mừng thêm 1 năm kinh nghiệm sống nhá, Bông ơi! 🎈</div>
+
+
+      <!-- FUNNY CARDS -->
+      <div class="cards-grid">
+        <div class="wish-card">
+          <span class="card-icon">😎</span>
+          <div class="card-title">Chúc em Bông</div>
+          <p class="card-text">Luôn tự tin, không bao giờ thấy mình xấu, dù hôm nay chưa kịp rửa mặt 🧖 xink gái tink
+            quái sợ gì ai</p>
+        </div>
+        <div class="wish-card">
+          <span class="card-icon">💸</span>
+          <div class="card-title">Chúc em Bông</div>
+          <p class="card-text">Tiền vào như nước, mà <em>tiêu không hết</em> — okay cái đó hơi khó nhưng cứ chúc lỡ đâu
+            thiệc</p>
+        </div>
+        <div class="wish-card">
+          <span class="card-icon">🍰</span>
+          <div class="card-title">Chúc em Bông</div>
+          <p class="card-text">Ăn bánh sinh nhật không bị dính kem lên mũi — hoặc bị dính nhưng vẫn <em>cute như
+              thường</em> ủa có tổ chức k ta</p>
+        </div>
+        <div class="wish-card">
+          <span class="card-icon">🌈</span>
+          <div class="card-title">Chúc em Bông</div>
+          <p class="card-text">Mọi điều ước đều thành sự thật — trừ cái ước không phải đi làm, cái đó <em>khó quá</em>
+            anh Huấn nói gòi có làm mới có ăn</p>
+        </div>
+      </div>
+
+      <!-- METER -->
+      <div class="meter-section">
+        <div class="meter-title">📊 Chỉ số Bông đo ngày hôm nay</div>
+
+        <div class="meter-row">
+          <div class="meter-label">🌸 Độ cute</div>
+          <div class="meter-bar-wrap">
+            <div class="meter-bar" style="width: 100%; animation-delay: 0.1s;"></div>
+          </div>
+          <div class="meter-val">∞%</div>
+        </div>
+        <div class="meter-row">
+          <div class="meter-label">😆 Độ hài hước</div>
+          <div class="meter-bar-wrap">
+            <div class="meter-bar" style="width: 88%; animation-delay: 0.25s;"></div>
+          </div>
+          <div class="meter-val">88%</div>
+        </div>
+        <div class="meter-row">
+          <div class="meter-label">☀️ Năng lượng</div>
+          <div class="meter-bar-wrap">
+            <div class="meter-bar" style="width: 95%; animation-delay: 0.4s;"></div>
+          </div>
+          <div class="meter-val">95%</div>
+        </div>
+        <div class="meter-row">
+          <div class="meter-label">🍜 Ham ăn</div>
+          <div class="meter-bar-wrap">
+            <div class="meter-bar" style="width: 100%; animation-delay: 0.55s;"></div>
+          </div>
+          <div class="meter-val">MAX</div>
+        </div>
+        <div class="meter-row">
+          <div class="meter-label">😤 Chịu già</div>
+          <div class="meter-bar-wrap">
+            <div class="meter-bar" style="width: 5%; animation-delay: 0.7s;"></div>
+          </div>
+          <div class="meter-val">5%</div>
+        </div>
+      </div>
+
+      <!-- FINAL -->
+      <div class="final-row">🎊🌸🎂🌸🎊</div>
+      <div class="final-msg">Chúc Bông sinh nhật vui vẻ,<br>khoẻ mạnh & hạnh phúc nhé! 💕</div>
+
+      <div>
+        <button class="btn-surprise" onclick="showSurprise()">🎁 Bấm nhận thêm quà bất ngờ!</button>
+        <div class="surprise-msg" id="surprise-msg"></div>
+      </div>
+
     </div>
-    <script type="module" src="./main.js"></script>
+
+    <script>
+      /* === CONFETTI === */
+      const canvas = document.getElementById('confetti-canvas');
+      const ctx = canvas.getContext('2d');
+      let W, H, particles = [];
+
+      const pinkColors = ['#ff85b3', '#ff3d85', '#ffb6d9', '#ffd6ea', '#ff6ba8', '#ffcce4', '#d6175a', '#ff94c2'];
+
+      function resize() {
+        W = canvas.width = window.innerWidth;
+        H = canvas.height = window.innerHeight;
+      }
+
+      function mkParticle() {
+        return {
+          x: Math.random() * W,
+          y: -20,
+          w: Math.random() * 10 + 4,
+          h: Math.random() * 6 + 3,
+          color: pinkColors[Math.floor(Math.random() * pinkColors.length)],
+          rotation: Math.random() * Math.PI * 2,
+          rotSpeed: (Math.random() - 0.5) * 0.15,
+          vx: (Math.random() - 0.5) * 2,
+          vy: Math.random() * 2.5 + 1.5,
+          alpha: 1
+        };
+      }
+
+      for (let i = 0; i < 120; i++) {
+        const p = mkParticle();
+        p.y = Math.random() * H;
+        particles.push(p);
+      }
+
+      function drawConfetti() {
+        ctx.clearRect(0, 0, W, H);
+        if (Math.random() < 0.4) particles.push(mkParticle());
+        particles.forEach((p, i) => {
+          ctx.save();
+          ctx.translate(p.x, p.y);
+          ctx.rotate(p.rotation);
+          ctx.globalAlpha = p.alpha;
+          ctx.fillStyle = p.color;
+          ctx.beginPath();
+          ctx.ellipse(0, 0, p.w / 2, p.h / 2, 0, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+          p.x += p.vx; p.y += p.vy; p.rotation += p.rotSpeed;
+          if (p.y > H + 20) { particles.splice(i, 1); }
+        });
+        requestAnimationFrame(drawConfetti);
+      }
+
+      window.addEventListener('resize', resize);
+      resize();
+      drawConfetti();
+
+      /* === FLOATING EMOJIS === */
+      const emojis = ['🌸', '💕', '🌷', '✨', '🎀', '💖', '🌺', '⭐', '🎊', '💗'];
+      function mkFloaty() {
+        const el = document.createElement('div');
+        el.className = 'floaty';
+        el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+        el.style.left = Math.random() * 100 + 'vw';
+        const dur = Math.random() * 4 + 4;
+        el.style.animationDuration = dur + 's';
+        el.style.animationDelay = Math.random() * 2 + 's';
+        el.style.fontSize = (Math.random() * 16 + 18) + 'px';
+        document.getElementById('floaties').appendChild(el);
+        setTimeout(() => el.remove(), (dur + 2) * 1000);
+      }
+
+      setInterval(mkFloaty, 600);
+
+      /* === SURPRISE BUTTON === */
+      const msgs = [
+        '🎉 lẹ lẹ về nhiều chiện nhá, rảnh tay bấm thêm cái nữa !',
+        '🌸 Em xứng đáng được ăn cả cái bánh một mình!',
+        '✨ Năm nay em chắc chắn sẽ xinh hơn năm ngoái!',
+        '🎂 Bí quyết trẻ mãi: cứ sinh nhật là ăn bánh thật nhiều, cười nhiều vui nhiều nhá!',
+        '😆 Chúc em không bao giờ phải nhớ mật khẩu sai nha!',
+        '💖 Em là phiên bản giới hạn — không có phiên bản 2!',
+      ];
+      let msgIdx = 0;
+
+      function showSurprise() {
+        const el = document.getElementById('surprise-msg');
+        el.style.transform = 'scale(0)';
+        setTimeout(() => {
+          el.textContent = msgs[msgIdx % msgs.length];
+          msgIdx++;
+          el.style.transform = 'scale(1)';
+          el.style.transition = 'transform 0.3s cubic-bezier(0.34,1.56,0.64,1)';
+        }, 150);
+      }
+    </script>
   </body>
+
 </html>

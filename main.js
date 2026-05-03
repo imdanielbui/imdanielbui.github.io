@@ -1,53 +1,129 @@
-// import * as THREE from "three";
-// import { OrbitControls } from "three/addons/controls/OrbitControls.js";
-import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.145.0/build/three.module.js";
-import { OrbitControls } from "https://cdn.jsdelivr.net/npm/three@0.145.0/examples/jsm/controls/OrbitControls.js";
+// Confetti Canvas
+const canvas = document.getElementById('confetti-canvas');
+const ctx = canvas.getContext('2d');
 
-const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-const renderer = new THREE.WebGLRenderer();
-renderer.setSize(innerWidth, innerHeight);
-renderer.setPixelRatio(devicePixelRatio);
-document.body.appendChild(renderer.domElement);
-const controls = new OrbitControls(camera, renderer.domElement);
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
 
-const globeGeometry = new THREE.IcosahedronGeometry(5, 20);
-const material = new THREE.MeshPhysicalMaterial({
-  color: 0xffffff,
-  metalness: 0.1,
-  roughness: 0.1,
-  transmission: 1,
-  clearcoat: 0.3,
-  clearcoatRoughness: 0.2,
-  reflectivity: 0.09,
-  ior: 1,
-  thickness: 10, // Your environment map texture
-});
-const mesh = new THREE.Mesh(globeGeometry, material);
+const confetti = [];
 
-const planeGeometry = new THREE.PlaneGeometry(1000, 1000, 1000, 1000);
-const planeMaterial = new THREE.MeshPhongMaterial({
-  color: 0x808080,
-  side: THREE.DoubleSide,
-  flatShading: true,
-});
-const planeMesh = new THREE.Mesh(planeGeometry, planeMaterial);
-planeMesh.position.set(0, 0, -10);
-const light = new THREE.DirectionalLight(0xffffff, 1);
-light.position.set(10, 10, 10);
-const lightBg = new THREE.DirectionalLight(0xffffff, 1);
-lightBg.position.set(10, 10, -10);
+class Confetti {
+  constructor() {
+    this.x = Math.random() * canvas.width;
+    this.y = Math.random() * canvas.height - canvas.height;
+    this.size = Math.random() * 5 + 3;
+    this.speedY = Math.random() * 3 + 2;
+    this.speedX = (Math.random() - 0.5) * 2;
+    this.rotation = Math.random() * Math.PI;
+    this.rotationSpeed = (Math.random() - 0.5) * 0.1;
+    this.color = ['#ff6b6b', '#4ecdc4', '#ffd700', '#ff85c0', '#9d84b7', '#fff'][Math.floor(Math.random() * 6)];
+  }
 
-const { array } = planeMesh.geometry.attributes.position;
-for (let i = 3; i < array.length; i += 3) {
-  const z = array[i + 2];
-  array[i + 2] = z + Math.random();
+  update() {
+    this.y += this.speedY;
+    this.x += this.speedX;
+    this.rotation += this.rotationSpeed;
+    
+    if (this.y > canvas.height) {
+      this.y = -10;
+      this.x = Math.random() * canvas.width;
+    }
+  }
+
+  draw() {
+    ctx.save();
+    ctx.translate(this.x, this.y);
+    ctx.rotate(this.rotation);
+    ctx.fillStyle = this.color;
+    ctx.fillRect(-this.size / 2, -this.size / 2, this.size, this.size);
+    ctx.restore();
+  }
 }
 
-scene.add(planeMesh);
-scene.add(mesh);
-scene.add(light);
-scene.add(lightBg);
+// Create confetti
+for (let i = 0; i < 100; i++) {
+  confetti.push(new Confetti());
+}
+
+function animateConfetti() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  
+  confetti.forEach(particle => {
+    particle.update();
+    particle.draw();
+  });
+  
+  requestAnimationFrame(animateConfetti);
+}
+
+animateConfetti();
+
+// Handle window resize
+window.addEventListener('resize', () => {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+});
+
+// Add sound effect on page load
+window.addEventListener('load', () => {
+  playBirthdayMusic();
+});
+
+// Create a simple beep sound using Web Audio API
+function playBirthdayMusic() {
+  const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  
+  // Play a simple melody
+  const notes = [
+    { frequency: 262, duration: 0.3 },  // C
+    { frequency: 262, duration: 0.3 },  // C
+    { frequency: 294, duration: 0.3 },  // D
+    { frequency: 262, duration: 0.3 },  // C
+    { frequency: 349, duration: 0.3 },  // F
+    { frequency: 330, duration: 0.6 },  // E
+  ];
+  
+  let time = audioContext.currentTime;
+  
+  notes.forEach(note => {
+    const oscillator = audioContext.createOscillator();
+    const gainNode = audioContext.createGain();
+    
+    oscillator.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+    
+    oscillator.frequency.value = note.frequency;
+    gainNode.gain.setValueAtTime(0.3, time);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, time + note.duration);
+    
+    oscillator.start(time);
+    oscillator.stop(time + note.duration);
+    
+    time += note.duration;
+  });
+}
+
+// Add click animation to emojis
+document.querySelectorAll('.emoji').forEach(emoji => {
+  emoji.addEventListener('click', function() {
+    this.style.animation = 'none';
+    setTimeout(() => {
+      this.style.animation = '';
+    }, 10);
+  });
+});
+
+// Create particles on click
+document.addEventListener('click', (e) => {
+  for (let i = 0; i < 5; i++) {
+    const particle = new Confetti();
+    particle.x = e.clientX;
+    particle.y = e.clientY;
+    particle.speedY = (Math.random() - 0.5) * 5;
+    particle.speedX = (Math.random() - 0.5) * 5;
+    confetti.push(particle);
+  }
+});
 camera.position.z = 15;
 function animate() {
   controls.update();
