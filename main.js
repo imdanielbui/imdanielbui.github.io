@@ -68,7 +68,7 @@ const content = {
     {
       src: "./public/khoc.jpg",
       alt: "Sticker nhân vật màu xanh khóc lớn với hai dòng nước mắt",
-      caption: "Khi thèng em viết web sến quá làm chị đẹp muốn bật chế độ cảm động giả trân",
+      caption: "Khi thèng em viết web sến quá làm chị đẹp muốn bật chế độ củm động đậy",
     },
   ],
   meters: [
@@ -84,9 +84,9 @@ const content = {
   letterBody: [
     "Ngày mai 7/5 mới đúng sinh nhật chị, nhưng hôm nay em muốn gửi lời chúc trước theo cách riêng một chút, nên mới có cái quả sến súa công túa nì .",
     "Em chúc tuổi mới của chị có nhiều ngày dễ chịu hơn, nhiều tiếng cười hơn, nhiều năng lượng tốt hơn, và nhiều lần đi ăn ngon mà không phải đắn đo lâu. Chại bộ thì vẫn sung, ăn chay thì vẫn vui, còn hành trình khám phá ẩm thực thì mong tiếp tục huy hoàng như cũ.",
-    "Cứ giữ nguyên phiên bản chị đẹp nhẹ nhàng, sâu lắng, tĩnh mịnh, hay cười đáng yêu đó nhé. Với em thì như vậy là đủ quý rồi.",
+    "Cứ giữ nguyên phiên bản chị đẹp nhẹ nhàng, sâu lắng, tĩnh mịnh, hay cười đáng yêu đó nhé. Với em thì như vậy là quỷ đú (đủ quý) gòi.",
   ],
-  letterSign: "Thèng em hài hước vết xước, kiệm ban tổ chức sinh nhật online. Một lần nữa gỡ mũ chúc mừng.",
+  letterSign: "Thèng em hài hước vết xước, kiêmm ban tổ chức sinh nhật online. Một lần nữa gỡ mũ chúc mừng.",
 };
 
 const qs = (selector) => document.querySelector(selector);
@@ -97,6 +97,10 @@ const scratchCanvas = qs("#scratch-canvas");
 const scratchReveal = qs("#scratch-reveal");
 const scratchReset = qs("#scratch-reset");
 const scratchMessage = qs("#scratch-message");
+const memeGrid = qs("#meme-grid");
+const memeDots = qs("#meme-dots");
+const memePrev = qs("#meme-prev");
+const memeNext = qs("#meme-next");
 
 let audioContext;
 let masterGain;
@@ -152,7 +156,6 @@ function populateContent() {
     storyGrid.append(article);
   });
 
-  const memeGrid = qs("#meme-grid");
   memeGrid.innerHTML = "";
   content.memeImages.forEach((image) => {
     const figure = document.createElement("figure");
@@ -162,6 +165,16 @@ function populateContent() {
       <figcaption class="meme-caption">${image.caption}</figcaption>
     `;
     memeGrid.append(figure);
+  });
+
+  memeDots.innerHTML = "";
+  content.memeImages.forEach((_, index) => {
+    const dot = document.createElement("button");
+    dot.className = `meme-dot${index === 0 ? " is-active" : ""}`;
+    dot.type = "button";
+    dot.setAttribute("aria-label", `Xem meme ${index + 1}`);
+    dot.dataset.index = String(index);
+    memeDots.append(dot);
   });
 
   const meterList = qs("#meter-list");
@@ -202,6 +215,69 @@ function initReveal() {
   );
 
   document.querySelectorAll(".reveal").forEach((node) => observer.observe(node));
+}
+
+function initMemeCarousel() {
+  const getCards = () => Array.from(memeGrid.querySelectorAll(".meme-card"));
+
+  const updateActiveDot = () => {
+    const cards = getCards();
+    if (!cards.length) return;
+
+    const gridRect = memeGrid.getBoundingClientRect();
+    let activeIndex = 0;
+    let minDistance = Number.POSITIVE_INFINITY;
+
+    cards.forEach((card, index) => {
+      const distance = Math.abs(card.getBoundingClientRect().left - gridRect.left);
+      if (distance < minDistance) {
+        minDistance = distance;
+        activeIndex = index;
+      }
+    });
+
+    memeDots.querySelectorAll(".meme-dot").forEach((dot, index) => {
+      dot.classList.toggle("is-active", index === activeIndex);
+    });
+  };
+
+  const scrollToIndex = (index) => {
+    const cards = getCards();
+    const card = cards[index];
+    if (!card) return;
+    card.scrollIntoView({ behavior: "smooth", inline: "start", block: "nearest" });
+  };
+
+  memePrev.addEventListener("click", () => {
+    const current = Array.from(memeDots.querySelectorAll(".meme-dot")).findIndex((dot) =>
+      dot.classList.contains("is-active")
+    );
+    const nextIndex = current <= 0 ? getCards().length - 1 : current - 1;
+    scrollToIndex(nextIndex);
+  });
+
+  memeNext.addEventListener("click", () => {
+    const current = Array.from(memeDots.querySelectorAll(".meme-dot")).findIndex((dot) =>
+      dot.classList.contains("is-active")
+    );
+    const nextIndex = current >= getCards().length - 1 ? 0 : current + 1;
+    scrollToIndex(nextIndex);
+  });
+
+  memeDots.addEventListener("click", (event) => {
+    const target = event.target;
+    if (!(target instanceof HTMLButtonElement)) return;
+    const index = Number(target.dataset.index);
+    scrollToIndex(index);
+  });
+
+  let scrollTimer;
+  memeGrid.addEventListener("scroll", () => {
+    window.clearTimeout(scrollTimer);
+    scrollTimer = window.setTimeout(updateActiveDot, 80);
+  });
+
+  updateActiveDot();
 }
 
 function resizeConfetti() {
@@ -451,6 +527,7 @@ function initScratchCard() {
 
 populateContent();
 initReveal();
+initMemeCarousel();
 resizeConfetti();
 animateConfetti();
 document.body.classList.add("is-locked");

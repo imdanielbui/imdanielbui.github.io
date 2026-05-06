@@ -433,11 +433,65 @@ button {
   font-weight: 700;
 }
 
+.meme-carousel {
+  margin-top: 18px;
+}
+
+.meme-carousel-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+.meme-carousel-label {
+  margin: 0;
+  font-size: 0.92rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--pink-deep);
+}
+
+.meme-controls {
+  display: inline-flex;
+  gap: 10px;
+}
+
+.meme-nav {
+  width: 42px;
+  height: 42px;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.88);
+  color: var(--pink-deep);
+  box-shadow: var(--shadow-soft);
+  cursor: pointer;
+  transition:
+    transform 0.22s ease,
+    background 0.22s ease;
+}
+
+.meme-nav:hover,
+.meme-nav:focus-visible {
+  transform: translateY(-1px);
+  background: white;
+}
+
 .meme-grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(220px, 1fr);
   gap: 14px;
-  margin-top: 18px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+
+.meme-grid::-webkit-scrollbar {
+  display: none;
 }
 
 .meme-card {
@@ -446,6 +500,7 @@ button {
   border-radius: 24px;
   background: rgba(255, 255, 255, 0.86);
   box-shadow: var(--shadow-soft);
+  scroll-snap-align: start;
 }
 
 .meme-image {
@@ -461,6 +516,30 @@ button {
   font-size: 0.92rem;
   line-height: 1.5;
   color: var(--text-main);
+}
+
+.meme-dots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.meme-dot {
+  width: 10px;
+  height: 10px;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(216, 79, 125, 0.2);
+  cursor: pointer;
+  transition:
+    transform 0.22s ease,
+    background 0.22s ease;
+}
+
+.meme-dot.is-active {
+  background: var(--pink-deep);
+  transform: scale(1.1);
 }
 
 .meter-list {
@@ -615,9 +694,12 @@ button {
   }
 
   .traits-grid,
-  .story-grid,
-  .meme-grid {
+  .story-grid {
     grid-template-columns: 1fr;
+  }
+
+  .meme-grid {
+    grid-auto-columns: 85%;
   }
 
   .meter-row {
@@ -697,6 +779,15 @@ button {
   .hero-actions {
     display: grid;
     grid-template-columns: 1fr;
+  }
+
+  .meme-carousel-top {
+    align-items: start;
+    flex-direction: column;
+  }
+
+  .meme-grid {
+    grid-auto-columns: 88%;
   }
 
   .scratch-shell,
