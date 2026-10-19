@@ -1,134 +1,299 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="vi">
 
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Chị Đẹp Thanh Tâm Birthday Show</title>
-    <meta name="description" content="Website sinh nhật bất ngờ dành cho chị đẹp Lê Ngọc Thanh Tâm." />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;700;800&family=Coiny&display=swap"
-      rel="stylesheet" />
-    <link rel="stylesheet" href="/style.css" />
+    <meta charset="utf-8">
+    <!-- viewport-fit=cover để dùng được safe-area (Dynamic Island, thanh Home). Không chặn zoom. -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#FFF8F3">
+    <meta name="color-scheme" content="light">
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="description" content="Một lá thư nhỏ nhân ngày 20/10.">
+    <title>20.10 · Một lá thư nhỏ</title>
+
+    <link rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23C87991' d='M12 21s-7-4.6-9.2-9A5.2 5.2 0 0 1 12 6.5a5.2 5.2 0 0 1 9.2 5.5C19 16.4 12 21 12 21z'/%3E%3C/svg%3E">
+
+    <!-- Font: Playfair Display (tiêu đề, thư) + DM Sans (nút, chú thích). Nếu offline sẽ dùng font dự phòng. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;1,400&display=swap">
+
+    <link rel="stylesheet" href="./style.css">
   </head>
 
   <body>
-    <canvas id="confetti-canvas" aria-hidden="true"></canvas>
-    <div class="noise-layer" aria-hidden="true"></div>
 
-    <div class="start-screen" id="start-screen">
-      <div class="start-card">
-        <p class="eyebrow">Bản phát sóng nội bộ của thèng em</p>
-        <h1 class="start-title">Nhiệt liệt chào mừng tuổi 18 đổi mới lần thứ 7 của chị toai.
-          Các đại biểu đứng dậy vỗ tay chúc mừng sinh nhật chị toai nhé</h1>
-        <p class="start-copy">
-          Hôm nay em gửi trước, mai 7/5 chị mở ra là vừa đẹp. Chạm để bật nhạc và
-          nhận quà bất ngờ nhé.
-        </p>
-        <button class="start-button" id="start-button" type="button">
-          Bấm mở party cho chị đẹp
-        </button>
-      </div>
+    <!-- Nền cố định: hai lớp được chuyển mờ chéo khi sang cảnh cuộn phim -->
+    <div class="backdrop" aria-hidden="true">
+      <div class="backdrop__layer backdrop__layer--cream"></div>
+      <div class="backdrop__layer backdrop__layer--dusty"></div>
     </div>
 
-    <main class="page-shell" id="page-shell">
-      <section class="hero reveal">
-        <div class="hero-copy">
-          <p class="eyebrow" id="hero-eyebrow"></p>
-          <h1 class="hero-title" id="hero-title"></h1>
-          <p class="hero-description" id="hero-description"></p>
+    <!-- Biểu tượng dùng lại -->
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+      <symbol id="icon-bloom" viewBox="0 0 80 80">
+        <g fill="#F2C7D5" stroke="#C87991" stroke-width="1.2">
+          <ellipse cx="40" cy="23" rx="9.5" ry="16" />
+          <ellipse cx="40" cy="23" rx="9.5" ry="16" transform="rotate(72 40 40)" />
+          <ellipse cx="40" cy="23" rx="9.5" ry="16" transform="rotate(144 40 40)" />
+          <ellipse cx="40" cy="23" rx="9.5" ry="16" transform="rotate(216 40 40)" />
+          <ellipse cx="40" cy="23" rx="9.5" ry="16" transform="rotate(288 40 40)" />
+        </g>
+        <circle cx="40" cy="40" r="7" fill="#FFF8F3" stroke="#C87991" stroke-width="1.2" />
+        <circle cx="40" cy="40" r="2" fill="#C87991" />
+      </symbol>
+    </svg>
 
-          <div class="hero-tags" id="hero-tags"></div>
+    <noscript>
+      <p class="noscript">Lá thư này cần bật JavaScript để mở ra. Bạn hãy bật JavaScript trong trình duyệt rồi tải lại
+        trang nhé ♡</p>
+    </noscript>
 
-          <div class="hero-actions">
-            <a class="pill-button" href="#scratch-card">Mở quà ngay</a>
-            <button class="ghost-button" id="burst-button" type="button">
-              Tung màu thim nữa đi
-            </button>
-          </div>
+    <main class="stage" id="stage">
+
+      <!-- ============ SCENE 01 · THE INVITATION ============ -->
+      <section class="scene scene--invitation" id="scene-invitation" aria-labelledby="invitation-title">
+        <div class="invitation">
+          <svg class="flower" viewBox="0 0 80 80" aria-hidden="true" focusable="false">
+            <g class="flower__outer">
+              <g transform="rotate(0 40 40)">
+                <ellipse class="petal" style="--i:0" cx="40" cy="23" rx="9.5" ry="16" />
+              </g>
+              <g transform="rotate(72 40 40)">
+                <ellipse class="petal" style="--i:1" cx="40" cy="23" rx="9.5" ry="16" />
+              </g>
+              <g transform="rotate(144 40 40)">
+                <ellipse class="petal" style="--i:2" cx="40" cy="23" rx="9.5" ry="16" />
+              </g>
+              <g transform="rotate(216 40 40)">
+                <ellipse class="petal" style="--i:3" cx="40" cy="23" rx="9.5" ry="16" />
+              </g>
+              <g transform="rotate(288 40 40)">
+                <ellipse class="petal" style="--i:4" cx="40" cy="23" rx="9.5" ry="16" />
+              </g>
+            </g>
+            <g class="flower__inner">
+              <g transform="rotate(36 40 40)">
+                <ellipse class="petal petal--inner" style="--i:5" cx="40" cy="30" rx="5.5" ry="9.5" />
+              </g>
+              <g transform="rotate(108 40 40)">
+                <ellipse class="petal petal--inner" style="--i:6" cx="40" cy="30" rx="5.5" ry="9.5" />
+              </g>
+              <g transform="rotate(180 40 40)">
+                <ellipse class="petal petal--inner" style="--i:7" cx="40" cy="30" rx="5.5" ry="9.5" />
+              </g>
+              <g transform="rotate(252 40 40)">
+                <ellipse class="petal petal--inner" style="--i:8" cx="40" cy="30" rx="5.5" ry="9.5" />
+              </g>
+              <g transform="rotate(324 40 40)">
+                <ellipse class="petal petal--inner" style="--i:9" cx="40" cy="30" rx="5.5" ry="9.5" />
+              </g>
+            </g>
+            <circle class="flower__core" cx="40" cy="40" r="5.5" />
+            <circle class="flower__dot" cx="40" cy="40" r="1.6" />
+          </svg>
+
+          <h1 class="invitation__title" id="invitation-title" data-text="title"></h1>
+          <p class="invitation__intro" data-text="texts.invitationIntro"></p>
+          <button type="button" class="btn btn--primary invitation__cta" id="start-btn"
+            data-text="texts.invitationButton"></button>
         </div>
-
-        <div class="hero-visual">
-          <div class="photo-frame">
-            <span class="photo-badge badge-top">chị đẹp 2001</span>
-            <img class="hero-photo" src="./public/snthanhtam.png"
-              alt="Lê Ngọc Thanh Tâm ngồi trên bãi biển với bánh sinh nhật" />
-            <span class="photo-badge badge-right">vibe beach birthday</span>
-            <span class="photo-badge badge-bottom">Ghiền cà Phơ</span>
-          </div>
-          <div class="sticker sticker-star">✨</div>
-          <div class="sticker sticker-heart">💗</div>
-          <div class="sticker sticker-coffee">☕</div>
-        </div>
+        <p class="invitation__date">20.10</p>
       </section>
 
-      <section class="panel panel-profile reveal">
-        <div class="section-heading">
-          <p class="eyebrow">Hồ sơ bí mật</p>
-          <h2>Chị đẹp thuộc hệ dịu nhưng không hạt nhài</h2>
-        </div>
-        <div class="traits-grid" id="traits-grid"></div>
-      </section>
+      <!-- ============ SCENE 02 · THE ENVELOPE ============ -->
+      <section class="scene scene--envelope" id="scene-envelope" aria-labelledby="envelope-heading" hidden>
+        <h2 class="visually-hidden" id="envelope-heading" tabindex="-1" data-text="texts.envelopeHeading"></h2>
 
-      <section class="panel panel-journey reveal">
-        <div class="section-heading">
-          <p class="eyebrow">Bản tin nổi bật</p>
-          <h2>Tổng hợp các dấu hiệu cho thấy mai 7/5 phải được chúc mừng linh đình</h2>
-        </div>
-        <div class="story-grid" id="story-grid"></div>
-        <div class="meme-carousel">
-          <div class="meme-carousel-top">
-            <p class="meme-carousel-label">Phóng sự meme nội bộ</p>
-            <div class="meme-controls">
-              <button class="meme-nav" id="meme-prev" type="button" aria-label="Xem meme trước">←</button>
-              <button class="meme-nav" id="meme-next" type="button" aria-label="Xem meme tiếp">→</button>
+        <div class="envelope-stage">
+          <div class="envelope" id="envelope">
+            <span class="env-shadow" aria-hidden="true"></span>
+            <span class="env-back" aria-hidden="true"></span>
+
+            <span class="env-letter" aria-hidden="true">
+              <span class="env-letter__to" data-text="texts.envelopePaperLabel"></span>
+            </span>
+
+            <!-- Mặt trước phong bì: ba mảnh gấp, chừa khuyết hình chữ V cho nắp -->
+            <svg class="env-front" viewBox="0 0 320 218" preserveAspectRatio="none" aria-hidden="true"
+              focusable="false">
+              <defs>
+                <linearGradient id="g-side" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0" stop-color="#F3C6D4" />
+                  <stop offset="1" stop-color="#F6D1DC" />
+                </linearGradient>
+                <linearGradient id="g-bottom" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0" stop-color="#F9DAE3" />
+                  <stop offset="1" stop-color="#F5CCD9" />
+                </linearGradient>
+              </defs>
+              <polygon points="0,0 160,126 0,218" fill="url(#g-side)" />
+              <polygon points="320,0 160,126 320,218" fill="url(#g-side)" transform="translate(0 0)" />
+              <polygon points="0,218 160,126 320,218" fill="url(#g-bottom)" />
+              <g fill="none" stroke="#A9566F" stroke-opacity=".22" stroke-width="1" vector-effect="non-scaling-stroke">
+                <polyline points="0,0 160,126 320,0" vector-effect="non-scaling-stroke" />
+                <polyline points="0,218 160,126 320,218" vector-effect="non-scaling-stroke" />
+              </g>
+            </svg>
+
+            <!-- Nắp phong bì (xoay 3D quanh cạnh trên) -->
+            <span class="env-flap" aria-hidden="true">
+              <span class="env-flap__face env-flap__face--out">
+                <svg viewBox="0 0 320 126" preserveAspectRatio="none" focusable="false">
+                  <defs>
+                    <linearGradient id="g-flap-out" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0" stop-color="#EDB3C5" />
+                      <stop offset="1" stop-color="#F2C2D1" />
+                    </linearGradient>
+                  </defs>
+                  <polygon points="-1,-1 321,-1 160,127" fill="url(#g-flap-out)" stroke="#A9566F" stroke-opacity=".25"
+                    stroke-width="1" vector-effect="non-scaling-stroke" />
+                </svg>
+                <!-- Con dấu trái tim -->
+                <svg class="env-seal" viewBox="0 0 48 48" focusable="false">
+                  <defs>
+                    <radialGradient id="g-seal" cx=".35" cy=".3" r=".9">
+                      <stop offset="0" stop-color="#D68CA2" />
+                      <stop offset="1" stop-color="#B05C76" />
+                    </radialGradient>
+                  </defs>
+                  <circle cx="24" cy="24" r="21" fill="url(#g-seal)" />
+                  <circle cx="24" cy="24" r="16.5" fill="none" stroke="#FFF8F3" stroke-opacity=".35" stroke-width="1" />
+                  <path transform="translate(10.5 10.8) scale(1.12)" fill="#FFF8F3"
+                    d="M12 21s-7-4.6-9.2-9A5.2 5.2 0 0 1 12 6.5a5.2 5.2 0 0 1 9.2 5.5C19 16.4 12 21 12 21z" />
+                </svg>
+              </span>
+              <span class="env-flap__face env-flap__face--in">
+                <svg viewBox="0 0 320 126" preserveAspectRatio="none" focusable="false">
+                  <defs>
+                    <linearGradient id="g-flap-in" x1="0" y1="1" x2="0" y2="0">
+                      <stop offset="0" stop-color="#F9E2E9" />
+                      <stop offset="1" stop-color="#F4CFDB" />
+                    </linearGradient>
+                  </defs>
+                  <polygon points="-1,-1 321,-1 160,127" fill="url(#g-flap-in)" stroke="#A9566F" stroke-opacity=".2"
+                    stroke-width="1" vector-effect="non-scaling-stroke" />
+                </svg>
+              </span>
+            </span>
+
+            <!-- Nút thật phủ lên phong bì để chạm / dùng bàn phím -->
+            <button type="button" class="envelope__hit" id="envelope-hit" aria-label="Mở phong bì"></button>
+          </div>
+
+          <div class="envelope-actions">
+            <p class="envelope-hint" id="envelope-hint" data-text="texts.envelopeHint"></p>
+            <div class="envelope-choices" id="envelope-choices">
+              <p class="envelope-tease" id="envelope-tease" aria-live="polite" hidden></p>
+              <button type="button" class="btn btn--primary" id="open-letter-btn"
+                data-text="texts.openLetterButton"></button>
+              <button type="button" class="btn btn--ghost btn--small" id="no-read-btn"
+                data-text="texts.noReadButton"></button>
             </div>
           </div>
-          <div class="meme-grid" id="meme-grid"></div>
-          <div class="meme-dots" id="meme-dots" aria-label="Vị trí meme"></div>
         </div>
       </section>
 
-      <section class="panel panel-meter reveal">
-        <div class="section-heading">
-          <p class="eyebrow">Thống kê vui vẻ</p>
-          <h2>Máy đo năng lượng trước thềm sinh nhật vừa quét xong</h2>
-        </div>
-        <div class="meter-list" id="meter-list"></div>
-      </section>
+      <!-- ============ SCENE 04 + 05 · FILM ROLL & FINAL WISH ============ -->
+      <section class="scene scene--film" id="scene-film" aria-labelledby="film-title" hidden>
+        <div class="film-screen">
+          <header class="film-intro">
+            <h2 class="film-intro__title" id="film-title" tabindex="-1" data-text="texts.filmTitle"></h2>
+            <p class="film-intro__text" data-text="texts.filmDescription"></p>
+          </header>
 
-      <section class="panel panel-scratch reveal" id="scratch-card">
-        <div class="section-heading">
-          <p class="eyebrow">Quà bí mật</p>
-          <h2>Cào nhẹ để nhận lời chúc độc quyền từ thèng em</h2>
-        </div>
-        <div class="scratch-shell">
-          <div class="scratch-reveal" id="scratch-reveal">
-            <p class="scratch-label">Đã mở quà</p>
-            <p class="scratch-message" id="scratch-message"></p>
+          <div class="film" id="film">
+            <div class="film__viewport" id="film-viewport" tabindex="0" role="region"
+              aria-label="Cuộn phim kỷ niệm. Dùng phím mũi tên trái và phải để xem thêm.">
+              <div class="film__track" id="film-track">
+                <div class="film__set" id="film-set"></div>
+              </div>
+            </div>
+            <div class="film__controls">
+              <button type="button" class="btn btn--ghost btn--small" id="film-toggle"></button>
+            </div>
           </div>
-          <canvas class="scratch-canvas" id="scratch-canvas" aria-label="Khu vực cào để mở lời chúc"></canvas>
-        </div>
-        <button class="ghost-button scratch-reset" id="scratch-reset" type="button">
-          Cào lại lần nữa
-        </button>
-      </section>
 
-      <section class="panel panel-letter reveal">
-        <div class="section-heading">
-          <p class="eyebrow">Thư cuối chương trình</p>
-          <h2>Phần này nghiêm túc hơn 12% so với các đoạn ở trên</h2>
+          <button type="button" class="scroll-cue" id="scroll-cue">
+            <span data-text="texts.scrollCue"></span>
+            <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false">
+              <path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"
+                stroke-linejoin="round" />
+            </svg>
+          </button>
         </div>
-        <div class="letter-card">
-          <p class="letter-to" id="letter-to"></p>
-          <div class="letter-body" id="letter-body"></div>
-          <p class="letter-sign" id="letter-sign"></p>
-        </div>
+
+        <section class="final" id="final" aria-labelledby="final-wish">
+          <div class="final__inner">
+            <svg class="final__bloom" aria-hidden="true" focusable="false">
+              <use href="#icon-bloom" />
+            </svg>
+            <p class="final__wish" id="final-wish">
+              <span data-text="texts.finalWish"></span>
+              <span class="final__wish-aside" data-text="texts.finalWishAside"></span>
+            </p>
+            <button type="button" class="btn btn--ghost" id="reread-btn" data-text="texts.rereadButton"></button>
+            <footer class="final__footer">
+              <p data-text="texts.footer"></p>
+            </footer>
+          </div>
+        </section>
       </section>
     </main>
 
-    <script type="module" src="/main.js"></script>
+    <!-- ============ SCENE 03 · THE LOVE LETTER (dialog) ============ -->
+    <dialog class="letter" id="letter-dialog" aria-labelledby="letter-title">
+      <div class="letter__sheet">
+        <header class="letter__head">
+          <svg class="letter__bloom" aria-hidden="true" focusable="false">
+            <use href="#icon-bloom" />
+          </svg>
+          <h2 class="letter__title" id="letter-title" data-text="texts.letterTitle"></h2>
+          <button type="button" class="letter__close" id="letter-close" aria-label="Đóng thư">
+            <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false">
+              <path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="1.7"
+                stroke-linecap="round" />
+            </svg>
+          </button>
+        </header>
+
+        <div class="letter__body" id="letter-body" tabindex="0">
+          <p class="letter__greeting" data-text="texts.letterGreeting"></p>
+          <div class="letter__paragraphs" id="letter-paragraphs"></div>
+          <p class="letter__closing" data-text="texts.letterClosing"></p>
+          <p class="letter__signature" data-text="texts.signature"></p>
+          <svg class="letter__flourish" viewBox="0 0 120 16" aria-hidden="true" focusable="false">
+            <path d="M4 8h42M74 8h42" stroke="#C87991" stroke-opacity=".55" stroke-width="1" stroke-linecap="round"
+              fill="none" />
+            <path transform="translate(50.5 1.5) scale(.5)" fill="#C87991"
+              d="M12 21s-7-4.6-9.2-9A5.2 5.2 0 0 1 12 6.5a5.2 5.2 0 0 1 9.2 5.5C19 16.4 12 21 12 21z" />
+          </svg>
+        </div>
+
+        <footer class="letter__foot">
+          <button type="button" class="btn btn--ghost" id="letter-fold" data-text="texts.foldButton"></button>
+        </footer>
+      </div>
+    </dialog>
+
+    <!-- Nút nhạc + thông báo: được chuyển vào trong dialog khi thư mở để vẫn bấm được -->
+    <div class="dock" id="dock">
+      <p class="toast" id="toast" role="status" aria-live="polite"></p>
+      <button type="button" class="music" id="music-toggle">
+        <svg class="music__icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false">
+          <path d="M9 18V6l10-2v12" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"
+            stroke-linejoin="round" />
+          <circle cx="7" cy="18" r="2.5" fill="currentColor" />
+          <circle cx="17" cy="16" r="2.5" fill="currentColor" />
+        </svg>
+        <span class="music__bars" aria-hidden="true"><i></i><i></i><i></i></span>
+        <span class="music__label" id="music-label">Bật nhạc</span>
+      </button>
+    </div>
+
+    <script src="./script.js"></script>
   </body>
 
 </html>
